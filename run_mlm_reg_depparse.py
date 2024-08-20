@@ -1,6 +1,7 @@
 """
 Fine-tuning a MLM model, with syntactic regularization.
 """
+
 # You can also adapt this script on your own masked language modeling task. Pointers for this are left as comments.
 
 import logging
@@ -426,10 +427,10 @@ class TrainerWithAttentionDepParseReg(Trainer):
 
         attns = torch.stack(attns)
 
-        if self.reg_type == "uniform":
+        if self.reg_type == "uniform" and self.lambda_reg != 0:
             heads = torch.where(heads > 511, 511, heads)
             loss += self.lambda_reg * self.get_batch_uniform_reg_val(attns, heads)
-        else:
+        elif self.reg_type == "max" and self.lambda_reg != 0:
             heads = torch.where(heads > 511, 511, heads)
             loss += self.lambda_reg * self.get_batch_max_reg_val(attns, heads)
 
@@ -754,9 +755,9 @@ def main():
         kwargs["dataset_tags"] = data_args.dataset_name
         if data_args.dataset_config_name is not None:
             kwargs["dataset_args"] = data_args.dataset_config_name
-            kwargs[
-                "dataset"
-            ] = f"{data_args.dataset_name} {data_args.dataset_config_name}"
+            kwargs["dataset"] = (
+                f"{data_args.dataset_name} {data_args.dataset_config_name}"
+            )
         else:
             kwargs["dataset"] = data_args.dataset_name
 
