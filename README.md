@@ -6,6 +6,29 @@ Our datasets have been uploaded to HF Hub:
 - Tokenized pre-training dataset: https://huggingface.co/datasets/angie-chen55/bert_pretraining_data (This contains both BookCorpus and Wikipedia, but only the Wikipedia portion of the dataset has "heads" and "relns" labelled, so these are set to -1's for the other examples)
 - Parses of 1K sample of WSJ data: https://huggingface.co/datasets/angie-chen55/wsj-dep-parses-1k
 
+# SAS-regularized training
+To run MLM training with SAS regularization with DDP:
+```
+python -m torch.distributed.launch --nproc_per_node=4 run_mlm_reg_depparse.py \
+    --config_name bert-base-uncased \
+    --tokenizer_name bert-base-uncased \
+    --dataset_name angie-chen55/bert_pretraining_data \
+    --do_train \
+    --warmup_steps=10000 \
+    --save_steps=5000 \
+    --max_steps=500000 \
+    --learning_rate=1e-4 \
+    --weight_decay=0.01 \
+    --lambda_reg=0.001 \
+    --per_device_train_batch_size=64 \
+    --gradient_accumulation_steps=1 \
+    --max_seq_length=512 \
+    --fp16 \
+    --reg_type max \
+    --preprocessing_num_workers 4 \
+    --reg_type=max --seed=0 --output_dir=<INSERT_OUTPUT_DIR>
+```
+
 
 ## Citation
 To cite our work, please use the below citation:
