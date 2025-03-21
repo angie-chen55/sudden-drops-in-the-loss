@@ -6,6 +6,9 @@ Our datasets have been uploaded to HF Hub:
 - Tokenized pre-training dataset: https://huggingface.co/datasets/angie-chen55/bert_pretraining_data (This contains both BookCorpus and Wikipedia, but only the Wikipedia portion of the dataset has "heads" and "relns" labelled, so these are set to -1's for the other examples)
 - Parses of 1K sample of WSJ data: https://huggingface.co/datasets/angie-chen55/wsj-dep-parses-1k
 
+We have also released all checkpoints of the 3 seeds of BERT-Base that we trained: https://huggingface.co/models?search=angie-chen55/bert-base-seed
+For the first 15K steps, we have checkpoints every 1K steps. Afterwards, checkpoint intervals range between 5K, 10K, and 50K steps.
+
 # SAS-regularized training
 To run MLM training with SAS regularization with DDP:
 ```
